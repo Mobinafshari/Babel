@@ -2,12 +2,11 @@ import React from 'react'
 import styles from "./Example.module.scss";
 
 function Example() {
-  const name = 'hashem'
+  const name = 'hashem';
+  let age = 20;
   return (
     <div>
-      <div className={styles["disabled"]}>example react component</div>
-      <button disabled style={{color : "red"}}>Click me</button>
-      <div className="h-full">{name}</div>
+      <div className="h-full">{`${name} is ${age} years old.`}</div>
     </div>
   );
 }

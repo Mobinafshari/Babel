@@ -1,16 +1,14 @@
 import React from 'react';
 import styles from "./Example.module.scss";
 function Example() {
-  const name = 'hashem';
+  (() => {
+    const name = 'hashem';
+  })();
+  (() => {
+    let age = 20;
+  })();
   return React.createElement("div", null, React.createElement("div", {
-    className: styles["disabled"]
-  }, "example react component"), React.createElement("button", {
-    disabled: true,
-    style: {
-      color: "red"
-    }
-  }, "Click me"), React.createElement("div", {
     className: "h-full"
-  }, name));
+  }, `${name} is ${age} years old.`));
 }
 export default Example;
