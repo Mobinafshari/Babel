@@ -62,6 +62,10 @@ function transformJSXElement(path) {
   const isComponent = /^[A-Z]/.test(tagName);
 
   const attributes = openingElement.attributes.map((attr) => {
+    if (t.isJSXSpreadAttribute(attr)) {
+      return t.spreadElement(attr.argument);
+    }
+
     const key = t.isValidIdentifier(attr.name.name)
       ? t.identifier(attr.name.name)
       : t.stringLiteral(attr.name.name);
