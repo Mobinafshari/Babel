@@ -5,7 +5,10 @@ function Example() {
   return React.createElement("div", null, React.createElement("div", {
     className: styles["disabled"]
   }, "example react component"), React.createElement("button", {
-    disabled: true
+    disabled: true,
+    style: {
+      color: "red"
+    }
   }, "Click me"), React.createElement("div", {
     className: "h-full"
   }, name));

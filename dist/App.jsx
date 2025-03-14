@@ -2,33 +2,14 @@ import React from "react";
 import Example from "./Example";
 function App() {
   const obj = {
-    name: "hashem",
+    name: "hashem"
   };
-  const family = "afshar";
-  return React.createElement(
-    "div",
-    {
-      onClick: () => alert("hello"),
-      className: "h-full",
-    },
-    React.createElement(
-      Example,
-      {
-        ...obj,
-        family: family,
-      },
-      React.createElement(
-        "div",
-        {
-          className: "h-[100px]",
-        },
-        "Hello There!"
-      )
-    ),
-    family &&
-      React.createElement("img", {
-        src: "photo.png",
-      })
-  );
+  const family = 'afshar';
+  return React.createElement("div", {
+    onClick: () => alert("hello"),
+    className: "h-full"
+  }, family ? React.createElement(Example, null) : React.createElement("p", null, "Not Founded!"), React.createElement("img", {
+    src: "photo.png"
+  }));
 }
 export default App;

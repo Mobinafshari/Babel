@@ -6,7 +6,7 @@ function Example() {
   return (
     <div>
       <div className={styles["disabled"]}>example react component</div>
-      <button disabled>Click me</button>
+      <button disabled style={{color : "red"}}>Click me</button>
       <div className="h-full">{name}</div>
     </div>
   );

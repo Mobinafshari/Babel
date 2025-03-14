@@ -5,10 +5,8 @@ function App() {
   const family = 'afshar'
   return (
     <div onClick={() => alert("hello")} className="h-full">
-      <Example {...obj} family={family}>
-        <div className="h-[100px]">Hello There!</div>
-      </Example>
-      {family && <img src="photo.png"/>}
+      {family ? <Example /> : <p>Not Founded!</p>}
+      <img src="photo.png"/>
     </div>
   );
 }
