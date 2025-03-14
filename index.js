@@ -16,10 +16,10 @@ async function processFolder(folderPath) {
 
   for (const file of files) {
     const filePath = path.join(folderPath, file);
-    const stat = await fs.promises.stat(filePath); 
+    const stat = await fs.promises.stat(filePath);
 
     if (stat.isDirectory()) {
-      await processFolder(filePath); 
+      await processFolder(filePath);
     } else if (stat.isFile() && /\.(js|ts|jsx|tsx)$/.test(file)) {
       await CompileOnce(filePath);
     }
@@ -38,44 +38,50 @@ async function CompileOnce(filePath) {
       JSXElement(path) {
         const openingElement = path.node.openingElement;
         const tagName = openingElement.name.name;
-           const attributes = openingElement.attributes.map((attr) => {
-             const key = t.isValidIdentifier(attr.name.name)
-               ? t.identifier(attr.name.name) 
-               : t.stringLiteral(attr.name.name); 
+        const isComponent = /^[A-Z]/.test(tagName);
+        const attributes = openingElement.attributes.map((attr) => {
+          const key = t.isValidIdentifier(attr.name.name)
+            ? t.identifier(attr.name.name)
+            : t.stringLiteral(attr.name.name);
 
-             if (t.isJSXExpressionContainer(attr.value)) {
-               return t.objectProperty(key, attr.value.expression);
-             } else {
-               return t.objectProperty(key, t.stringLiteral(attr.value.value));
-             }
-           });
-
+          if (!attr.value) {
+            return t.objectProperty(key, t.booleanLiteral(true));
+          } else if (t.isJSXExpressionContainer(attr.value)) {
+            return t.objectProperty(key, attr.value.expression);
+          } else {
+            return t.objectProperty(key, t.stringLiteral(attr.value.value));
+          }
+        });
 
         const attributesObject =
           attributes.length > 0
             ? t.objectExpression(attributes)
             : t.nullLiteral();
-           const children = path.node.children
-             .map((child) => {
-               if (t.isJSXText(child)) {
-                 return t.stringLiteral(child.value.trim()); 
-               } else if (t.isJSXElement(child)) {
-                 return child; 
-               } else if (t.isJSXExpressionContainer(child)) {
-                 return child.expression; 
-               }
-               return null;
-             })
-             .filter(Boolean);
+
+        const children = path.node.children
+          .map((child) => {
+            if (t.isJSXText(child)) {
+              const text = child.value.trim(); 
+              return text ? t.stringLiteral(text) : null; 
+            } else if (t.isJSXElement(child)) {
+              return child;
+            } else if (t.isJSXExpressionContainer(child)) {
+              if(t.jsxEmptyExpression(child.expression)) return null;
+              return child.expression;
+            }
+            return null;
+          })
+          .filter(Boolean); 
+
         const reactCreateElementCall = t.callExpression(
           t.memberExpression(
             t.identifier("React"),
             t.identifier("createElement")
           ),
           [
-            t.stringLiteral(tagName),
+            isComponent ? t.identifier(tagName) : t.stringLiteral(tagName),
             attributesObject,
-            ...children
+            ...children,
           ]
         );
 
@@ -93,6 +99,5 @@ async function CompileOnce(filePath) {
     console.error(`❌ Error reading file: ${filePath}`, error);
   }
 }
-
 
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));

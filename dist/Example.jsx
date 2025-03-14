@@ -1,10 +1,12 @@
 import React from 'react';
 import styles from "./Example.module.scss";
-function example() {
-  return <>
-      React.createElement("div", {
-      className: styles["disabled"]
-    }, "example react component")
-    </>;
+function Example() {
+  return React.createElement("div", null, React.createElement("div", {
+    className: styles["disabled"]
+  }, "example react component"), React.createElement("button", {
+    disabled: true
+  }, "Click me"), React.createElement("div", {
+    className: "h-full"
+  }, "h-full"));
 }
-export default example;
+export default Example;
