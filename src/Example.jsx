@@ -3,6 +3,7 @@ import styles from "./Example.module.scss";
 
 function Example() {
   const name = "hashem";
+  let phone = 99
   function Declare() {
     const number = 922;
   }

@@ -145,12 +145,27 @@ function transformToES5(path) {
   if (path.node.kind === "const" || path.node.kind === "let") {
     const parent = path.parentPath;
 
+    if (parent.isBlockStatement() && parent.parentPath.isFunction()) {
+      path.node.kind = "var";
+      path.skip();
+      return;
+    }
+
+    if (
+      parent.isFunction() ||
+      parent.isArrowFunctionExpression() ||
+      parent.isFunctionExpression()
+    ) {
+      path.node.kind = "var";
+      path.skip();
+      return;
+    }
+
     if (
       parent.isBlockStatement() &&
       (parent.parentPath.isIfStatement() ||
         parent.parentPath.isForStatement() ||
-        parent.parentPath.isWhileStatement() ||
-        parent.parentPath.isBlockStatement())
+        parent.parentPath.isWhileStatement())
     ) {
       path.node.kind = "var";
       const iife = t.callExpression(
@@ -159,19 +174,9 @@ function transformToES5(path) {
       );
       path.replaceWith(iife);
       path.skip();
-      return;
-    }
-    if (
-      parent.isFunction() ||
-      parent.isArrowFunctionExpression() ||
-      parent.isFunctionExpression() ||
-      parent.isBlockStatement()
-    ) {
-      path.node.kind = "var";
-      path.skip();
-      return;
     }
   }
 }
+
 
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));

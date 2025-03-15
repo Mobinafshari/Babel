@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./Example.module.scss";
 function Example() {
   var name = "hashem";
+  var phone = 99;
   function Declare() {
     var number = 922;
   }
@@ -11,9 +12,7 @@ function Example() {
     })();
   }
   {
-    (function () {
-      var family = "hashemi";
-    })();
+    let family = "hashemi";
   }
   return React.createElement("div", null, React.createElement("div", {
     className: "h-full"
