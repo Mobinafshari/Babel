@@ -1,14 +1,22 @@
-import React from 'react';
+import React from "react";
 import styles from "./Example.module.scss";
 function Example() {
-  (() => {
-    const name = 'hashem';
-  })();
-  (() => {
-    let age = 20;
-  })();
+  var name = "hashem";
+  function Declare() {
+    var number = 922;
+  }
+  if (name === "hashem") {
+    (function () {
+      var age = 20;
+    })();
+  }
+  {
+    (function () {
+      var family = "hashemi";
+    })();
+  }
   return React.createElement("div", null, React.createElement("div", {
     className: "h-full"
-  }, `${name} is ${age} years old.`));
+  }, `${name} is ${age ?? 22} years old.`));
 }
 export default Example;
