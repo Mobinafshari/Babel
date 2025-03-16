@@ -2,20 +2,12 @@ import React from "react";
 import styles from "./Example.module.scss";
 
 function Example() {
-  const name = "hashem";
-  let phone = 99
-  function Declare() {
-    const number = 922;
-  }
-  if (name === "hashem") {
-    let age = 20;
-  }
-  {
-    let family = "hashemi";
+  const Logger = () => {
+    return console.log('hello world!')
   }
   return (
     <div>
-      <div className="h-full">{`${name} is ${age ?? 22} years old.`}</div>
+      <div className="h-full" onClick={Logger}>{`${name} is ${age ?? 22} years old.`}</div>
     </div>
   );
 }

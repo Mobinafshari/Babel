@@ -44,7 +44,10 @@ async function CompileOnce(filePath) {
         transformJSXFragment(path);
       },
       VariableDeclaration(path) {
-        transformToES5(path);
+        transformVariables(path);
+      },
+      ArrowFunctionExpression(path) {
+        transformArrowFunction(path);
       },
     });
 
@@ -141,7 +144,7 @@ function transformJSXFragment(path) {
 
   path.replaceWith(reactFragment);
 }
-function transformToES5(path) {
+function transformVariables(path) {
   if (path.node.kind === "const" || path.node.kind === "let") {
     const parent = path.parentPath;
 
@@ -177,7 +180,21 @@ function transformToES5(path) {
     }
   }
 }
+function transformArrowFunction(path) {
+  const { node } = path;
 
+  const functionExpression = t.functionExpression(
+    null, 
+    node.params, 
+    t.isBlockStatement(node.body) 
+      ? node.body 
+      : t.blockStatement([t.returnStatement(node.body)]), 
+    false, 
+    false 
+  );
+
+  path.replaceWith(functionExpression);
+}
 
 
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));
