@@ -1,10 +1,13 @@
 import React from "react";
 import styles from "./Example.module.scss";
 function Example() {
-  var name = "hashem";
-  var phone = 99;
+  var name;
+  var name;
+  var phone;
+  var phone;
   function Declare() {
-    var number = 922;
+    var number;
+    var number;
   }
   if (name === "hashem") {
     (function () {

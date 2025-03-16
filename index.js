@@ -147,6 +147,7 @@ function transformToES5(path) {
 
     if (parent.isBlockStatement() && parent.parentPath.isFunction()) {
       path.node.kind = "var";
+      hoistVariable(path);
       path.skip();
       return;
     }
@@ -157,6 +158,7 @@ function transformToES5(path) {
       parent.isFunctionExpression()
     ) {
       path.node.kind = "var";
+      hoistVariable(path);
       path.skip();
       return;
     }
@@ -178,5 +180,14 @@ function transformToES5(path) {
   }
 }
 
+function hoistVariable(path) {
+  const block = path.getStatementParent(); 
+  const declaration = t.variableDeclaration("var", [
+    t.variableDeclarator(path.node.declarations[0].id),
+  ]);
+
+  block.insertBefore(declaration); 
+  path.node.declarations[0].init = null;
+}
 
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));
