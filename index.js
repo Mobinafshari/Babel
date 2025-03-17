@@ -151,7 +151,6 @@ function transformVariables(path) {
 
     if (parent.isBlockStatement() && parent.parentPath.isFunction()) {
       path.node.kind = "var";
-      path.skip();
       return;
     }
 
@@ -161,7 +160,6 @@ function transformVariables(path) {
       parent.isFunctionExpression()
     ) {
       path.node.kind = "var";
-      path.skip();
       return;
     }
 
@@ -177,14 +175,12 @@ function transformVariables(path) {
         []
       );
       path.replaceWith(iife);
-      path.skip();
     }
   }
 }
 
 function transformArrowFunction(path) {
   const { node } = path;
-  console.log(node)
   const functionExpression = t.functionExpression(
     null,
     node.params,

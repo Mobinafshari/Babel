@@ -2,9 +2,7 @@ import React from "react";
 import styles from "./Example.module.scss";
 
 function Example() {
-  const Logger =  () => {
-    return  console.log("hello world!");
-  };
+  const Logger = async () => console.log("hello world!");
 
   return (
     <div>
