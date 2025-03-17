@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "./Example.module.scss";
+var React = require("react");
+var styles = require("./Example.module.scss");
 function Example() {
   var Logger = async function () {
     return console.log("hello world!");

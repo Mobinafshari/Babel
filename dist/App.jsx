@@ -1,5 +1,5 @@
-import React from "react";
-import Example from "./Example";
+var React = require("react");
+var Example = require("./Example");
 function App() {
   return React.createElement("div", {
     className: "h-full"

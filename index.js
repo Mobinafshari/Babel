@@ -49,9 +49,9 @@ async function CompileOnce(filePath) {
       ArrowFunctionExpression(path) {
         transformArrowFunction(path);
       },
-      ImportDeclaration(path){
-        convertImportDeclaration(path)
-      }
+      ImportDeclaration(path) {
+        convertImportDeclaration(path);
+      },
     });
 
     const output = generate(ast).code;
@@ -190,15 +190,23 @@ function transformArrowFunction(path) {
     t.isBlockStatement(node.body)
       ? node.body
       : t.blockStatement([t.returnStatement(node.body)]),
-    false, 
-    node.async 
+    false,
+    node.async
   );
 
   path.replaceWith(functionExpression);
 }
 
-function convertImportDeclaration(path){
-  const { node} = path;
-  console.log(node)
+function convertImportDeclaration(path) {
+  const { node } = path;
+  const generated = t.variableDeclaration("var", [
+    t.variableDeclarator(
+      t.identifier(node.specifiers[0].local.name),
+      t.callExpression(t.identifier("require"), [
+        t.stringLiteral(node.source.value),
+      ])
+    ),
+  ]);
+  path.replaceWith(generated)
 }
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));
