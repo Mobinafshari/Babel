@@ -49,6 +49,9 @@ async function CompileOnce(filePath) {
       ArrowFunctionExpression(path) {
         transformArrowFunction(path);
       },
+      ImportDeclaration(path){
+        convertImportDeclaration(path)
+      }
     });
 
     const output = generate(ast).code;
@@ -194,4 +197,8 @@ function transformArrowFunction(path) {
   path.replaceWith(functionExpression);
 }
 
+function convertImportDeclaration(path){
+  const { node} = path;
+  console.log(node)
+}
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));
