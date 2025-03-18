@@ -1,5 +1,6 @@
-import React from "react";
+import React  , { useState , useEffect }from "react";
 import styles from "./Example.module.scss";
+import name from "./utils/helper";
 
 function Example() {
   const Logger = async () => console.log("hello world!");

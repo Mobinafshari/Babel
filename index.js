@@ -199,14 +199,34 @@ function transformArrowFunction(path) {
 
 function convertImportDeclaration(path) {
   const { node } = path;
-  const generated = t.variableDeclaration("var", [
-    t.variableDeclarator(
-      t.identifier(node.specifiers[0].local.name),
-      t.callExpression(t.identifier("require"), [
-        t.stringLiteral(node.source.value),
-      ])
-    ),
-  ]);
-  path.replaceWith(generated)
+  const imports = node.specifiers;
+
+  const declarations = imports.map((importedFile) => {
+    if (importedFile.type === "ImportDefaultSpecifier") {
+      return t.variableDeclaration("var", [
+        t.variableDeclarator(
+          t.identifier(importedFile.local.name),
+          t.callExpression(t.identifier("require"), [
+            t.stringLiteral(node.source.value),
+          ])
+        ),
+      ]);
+    } else if (importedFile.type === "ImportSpecifier") {
+      return t.variableDeclaration("var", [
+        t.variableDeclarator(
+          t.identifier(importedFile.local.name),
+          t.memberExpression(
+            t.callExpression(t.identifier("require"), [
+              t.stringLiteral(node.source.value),
+            ]),
+            t.identifier(importedFile.imported.name)
+          )
+        ),
+      ]);
+    }
+  });
+
+  path.replaceWithMultiple(declarations);
 }
+
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));
