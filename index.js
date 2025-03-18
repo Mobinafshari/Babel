@@ -62,8 +62,11 @@ async function CompileOnce(filePath) {
 
     const output = generate(ast).code;
 
-    const outputFilePath = path.join(outDir, path.basename(filePath));
-    fs.writeFileSync(outputFilePath, output);
+     const outputFilePath = path.join(
+       outDir,
+       path.basename(filePath, path.extname(filePath)) + ".js"
+     );
+     fs.writeFileSync(outputFilePath, output);
 
     console.log(`✅ Transformed: ${filePath} → ${outputFilePath}`);
   } catch (error) {
