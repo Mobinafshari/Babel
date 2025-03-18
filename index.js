@@ -58,15 +58,18 @@ async function CompileOnce(filePath) {
       ExportNamedDeclaration(path) {
         convertExportName(path);
       },
+      TemplateLiteral(path) {
+        convertBacktick(path);
+      },
     });
 
     const output = generate(ast).code;
 
-     const outputFilePath = path.join(
-       outDir,
-       path.basename(filePath, path.extname(filePath)) + ".js"
-     );
-     fs.writeFileSync(outputFilePath, output);
+    const outputFilePath = path.join(
+      outDir,
+      path.basename(filePath, path.extname(filePath)) + ".js"
+    );
+    fs.writeFileSync(outputFilePath, output);
 
     console.log(`✅ Transformed: ${filePath} → ${outputFilePath}`);
   } catch (error) {
@@ -263,7 +266,7 @@ function convertExportDefault(path) {
   path.replaceWith(converted);
 }
 
-function convertExportName(path){
+function convertExportName(path) {
   const { node } = path;
 
   if (
@@ -298,5 +301,33 @@ function convertExportName(path){
     path.insertAfter(declarations);
     path.replaceWith(node.declaration);
   }
+}
+
+function convertBacktick(path) {
+    const { node } = path;
+
+    if (node.expressions.length === 0) {
+      path.replaceWith(t.stringLiteral(node.quasis[0].value.cooked));
+      return;
+    }
+
+    let transformed = null; 
+
+    node.quasis.forEach((quasi, index) => {
+      if (quasi.value.cooked) {
+        const stringNode = t.stringLiteral(quasi.value.cooked);
+        transformed = transformed
+          ? t.binaryExpression("+", transformed, stringNode)
+          : stringNode;
+      }
+
+      if (node.expressions[index]) {
+        transformed = transformed
+          ? t.binaryExpression("+", transformed, node.expressions[index])
+          : node.expressions[index];
+      }
+    });
+
+    path.replaceWith(transformed);
 }
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));

@@ -1,14 +1,14 @@
-import React  , { useState , useEffect }from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Example.module.scss";
 import name from "./utils/helper";
 
 function Example() {
-  const Logger = async () => console.log("hello world!");
+  const message = `hello ppl in ${new Date().getFullYear()}`;
 
   return (
     <div>
       <div className="h-full" onClick={Logger}>
-        h
+        {`the message was ${message}`}
       </div>
     </div>
   );
