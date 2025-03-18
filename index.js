@@ -52,6 +52,9 @@ async function CompileOnce(filePath) {
       ImportDeclaration(path) {
         convertImportDeclaration(path);
       },
+      ExportDefaultDeclaration(path) {
+        convertExportDefault(path);
+      },
     });
 
     const output = generate(ast).code;
@@ -228,5 +231,32 @@ function convertImportDeclaration(path) {
 
   path.replaceWithMultiple(declarations);
 }
+
+function convertExportDefault(path) {
+  const { node } = path;
+
+  let declaration = node.declaration;
+
+  if (t.isIdentifier(declaration)) {
+    declaration = t.identifier(declaration.name);
+  }
+  else if (
+    t.isFunctionDeclaration(declaration) ||
+    t.isClassDeclaration(declaration)
+  ) {
+    declaration = t.toExpression(declaration);
+  }
+
+  const converted = t.expressionStatement(
+    t.assignmentExpression(
+      "=",
+      t.memberExpression(t.identifier("module"), t.identifier("exports")),
+      declaration
+    )
+  );
+
+  path.replaceWith(converted);
+}
+
 
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));

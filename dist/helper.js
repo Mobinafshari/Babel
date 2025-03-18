@@ -1,3 +1,3 @@
-async function name(params) {
-  await console.log('first');
-}
+module.exports = function name(params) {
+  console.log('first');
+};

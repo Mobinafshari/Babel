@@ -7,4 +7,4 @@ function App() {
     src: "photo.png"
   }));
 }
-export default App;
+module.exports = App;

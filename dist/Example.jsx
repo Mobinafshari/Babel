@@ -12,4 +12,4 @@ function Example() {
     onClick: Logger
   }, "h"));
 }
-export default Example;
+module.exports = Example;
