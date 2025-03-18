@@ -1,3 +1,3 @@
-async function name(params) {
+export async function Convertor(params) {
     await console.log('first')
 }

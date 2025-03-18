@@ -1,3 +1,4 @@
-module.exports = function name(params) {
-  console.log('first');
-};
+async function Convertor(params) {
+  await console.log('first');
+}
+exports.Convertor = Convertor;

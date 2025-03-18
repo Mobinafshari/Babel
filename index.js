@@ -55,6 +55,9 @@ async function CompileOnce(filePath) {
       ExportDefaultDeclaration(path) {
         convertExportDefault(path);
       },
+      ExportNamedDeclaration(path) {
+        convertExportName(path);
+      },
     });
 
     const output = generate(ast).code;
@@ -239,8 +242,7 @@ function convertExportDefault(path) {
 
   if (t.isIdentifier(declaration)) {
     declaration = t.identifier(declaration.name);
-  }
-  else if (
+  } else if (
     t.isFunctionDeclaration(declaration) ||
     t.isClassDeclaration(declaration)
   ) {
@@ -258,5 +260,40 @@ function convertExportDefault(path) {
   path.replaceWith(converted);
 }
 
+function convertExportName(path){
+  const { node } = path;
 
+  if (
+    t.isFunctionDeclaration(node.declaration) ||
+    t.isClassDeclaration(node.declaration)
+  ) {
+    const name = node.declaration.id.name;
+    const exported = t.expressionStatement(
+      t.assignmentExpression(
+        "=",
+        t.memberExpression(t.identifier("exports"), t.identifier(name)),
+        t.identifier(name)
+      )
+    );
+
+    path.insertAfter(exported);
+    path.replaceWith(node.declaration);
+  } else if (t.isVariableDeclaration(node.declaration)) {
+    const declarations = node.declaration.declarations.map((decl) => {
+      return t.expressionStatement(
+        t.assignmentExpression(
+          "=",
+          t.memberExpression(
+            t.identifier("exports"),
+            t.identifier(decl.id.name)
+          ),
+          t.identifier(decl.id.name)
+        )
+      );
+    });
+
+    path.insertAfter(declarations);
+    path.replaceWith(node.declaration);
+  }
+}
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));
