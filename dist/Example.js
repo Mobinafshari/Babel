@@ -5,6 +5,7 @@ var styles = require("./Example.module.scss");
 var name = require("./utils/helper");
 function Example() {
   var message = "hello ppl in " + new Date().getFullYear();
+  console.log('hello world!');
   return React.createElement("div", null, React.createElement("div", {
     className: "h-full",
     onClick: Logger

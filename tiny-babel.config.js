@@ -14,5 +14,14 @@ module.exports = {
         },
       };
     },
+    function customJSXPlugin() {
+      return {
+        visitor: {
+          JSXElement(path) {
+            console.log("Plugin modifies JSX!");
+          },
+        },
+      };
+    },
   ],
 };

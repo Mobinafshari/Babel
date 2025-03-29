@@ -7,7 +7,6 @@ const path = require("path");
 const { loadConfig, startWatchingConfig } = require("./watchConfig");
 
 let config = loadConfig();
-console.log("config =====>>>>>", config);
 
 const srcDir = "./src";
 const outDir = "./dist";
@@ -65,27 +64,24 @@ async function CompileOnce(filePath) {
       TemplateLiteral(path) {
         convertBacktick(path);
       },
+      
     };
 
-    // ✅ Load and apply plugin visitors dynamically
     config.plugins.forEach((plugin) => {
       const pluginVisitor = plugin().visitor;
       Object.keys(pluginVisitor).forEach((key) => {
         if (visitor[key]) {
-          // If a transformation already exists, combine it with the plugin logic
           const originalTransform = visitor[key];
           visitor[key] = function (path) {
             originalTransform(path);
             pluginVisitor[key](path);
           };
         } else {
-          // If it's a new transformation, just add it
           visitor[key] = pluginVisitor[key];
         }
       });
     });
 
-    // ✅ Apply transformations
     traverse(ast, visitor);
 
     const output = generate(ast).code;
@@ -356,8 +352,8 @@ function convertBacktick(path) {
   path.replaceWith(transformed);
 }
 
-startWatchingConfig((newConfig) => {
-  config = newConfig;
-  console.log("✅ Plugins updated!");
-});
+// startWatchingConfig((newConfig) => {
+//   config = newConfig;
+//   console.log("✅ Plugins updated!");
+// });
 processFolder(srcDir).catch((err) => console.error("❌ Error:", err));

@@ -4,7 +4,7 @@ import name from "./utils/helper";
 
 function Example() {
   const message = `hello ppl in ${new Date().getFullYear()}`;
-
+  console.log('hello world!')
   return (
     <div>
       <div className="h-full" onClick={Logger}>
