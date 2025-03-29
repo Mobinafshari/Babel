@@ -1,10 +1,15 @@
 module.exports = {
   plugins: [
-    function customLoggerPlugin() {
+    function customConsoleLogPlugin() {
       return {
         visitor: {
-          Identifier(path) {
-            console.log(`🔍 Visiting Identifier: ${path.node.name}`);
+          CallExpression(path) {
+            if (
+              path.node.callee.type === "MemberExpression" &&
+              path.node.callee.object.name === "console"
+            ) {
+              console.log(`🔍 Found console.log: ${path.toString()}`);
+            }
           },
         },
       };
